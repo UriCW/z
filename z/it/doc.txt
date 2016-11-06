@@ -1,0 +1,51 @@
+--[[
+A tagging system for multiple taglists
+tags are arranged in a table such that each screen has it's own tagsets and each tagset has its own awfu.widget.taglist
+
+
+
+internally, tags are represented like this:
+elements={
+    screen[1]={
+        id=1
+        lpanel=z.lpanel(...)
+        tagset[#n_i]={
+            wibox_layout=wibox.layout...
+            label="ts1"
+            widget_background=
+            textbox=
+            tag[#n_j]={
+                id=#id --We don't seem to need this
+                label="tag1"
+                rules={}
+                widget_background=wibox.widget.background()
+                textbox=wibox.widget.textbox
+                icon=wibox.widget.imagebox
+                buttons=awful.util.table.join(...)
+                awful_tag=awful.tag(...) --awful tag associated with this it.tag
+                default_client_layout=awful.layout.suit...
+                
+            }
+        }
+    }
+    screen[2]={...}
+}
+
+externally, tagsets can be created in several ways, the easiest of which is:
+screen=z.screen(
+    tagsets={ {"tag1","tag2"}, {"tag3","tag4"} }
+)
+This uses some default values to construct the internal representation of the tagsets
+alternatively, a more complex result can be achieved by passing the internal representation of the tagsets:
+
+screen=z.screen(args={
+    id=#
+    lpanel=
+    tagset[1]={...},
+    tagset[2]={...},
+})
+
+notes:
+
+I have to pass through the screen.id to z.it.screen->z.it.tagset->z.it.tag since awsome.tag requires a screen number :( ugly! the alternative is to have screen field in z.it.tag, but i like that less for the time being
+--]]

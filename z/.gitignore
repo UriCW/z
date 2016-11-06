@@ -1,0 +1,5 @@
+#vi junk
+*.swp
+.*.swp
+#The older tags attempt
+tags.lua
