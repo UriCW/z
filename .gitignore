@@ -1,3 +1,4 @@
 *.swp
 out.std
 out.err
+rc.old.lua

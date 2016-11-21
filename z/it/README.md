@@ -1,4 +1,6 @@
-It is a tagging mechanism for the awesome WM
+#it - A tagging management framework for the awesome WM
+
+
 
 Each screen has a list of tagsets, each tagset has a list of tags,
 

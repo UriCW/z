@@ -198,4 +198,16 @@ function tagset.find(me,args)
     end
     return ret
 end
+
+function tagset.save(me)
+    for i,t in pairs(me.tag) do
+    end
+end
+
+
+function tagset.dump(me)
+    for i,tag in pairs(me.tag)  do
+    end
+end
+
 setmetatable(_M, { __call=function(_, ...) return tagset.new(...) end })

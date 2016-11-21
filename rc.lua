@@ -1,6 +1,7 @@
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
+local spawn = require("awful.spawn")
 awful.rules = require("awful.rules")
 require("awful.autofocus")
 -- Widget and layout library
@@ -10,7 +11,7 @@ local beautiful = require("beautiful")
 -- Notification library
 local naughty = require("naughty")
 local menubar = require("menubar")
-
+local remote = require("awful.remote")
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -21,6 +22,7 @@ if awesome.startup_errors then
 end
 
 local z = require("z")
+z.debug.enabled=true
 -- Handle runtime errors after startup
 do
     local in_error = false
@@ -308,6 +310,7 @@ globalkeys = awful.util.table.join(
               end),
     -- Menubar
     awful.key({ modkey }, "p", function() menubar.show() end),
+
     --Tagging
     awful.key({ modkey }, "F2", function() 
         z.it.utils.toggle(it)
@@ -326,18 +329,21 @@ globalkeys = awful.util.table.join(
         it:add_tagset({})
         it.screen[mouse.screen].lpanel:pop({})
     end ),
-    awful.key({ modkey , "Control" }, "t", function() 
+    awful.key({ modkey ,  },"BackSpace" , function() 
         --it:rename_tagset({})
         it.screen[mouse.screen].lpanel:show()
         it:rename_tag({})
     end ),
-    awful.key({ modkey , "Control","Shift" }, "t", function() 
+    awful.key({ modkey , "Shift"}, "BackSpace", function() 
         it.screen[mouse.screen].lpanel:show()
         it:rename_tagset({})
     end ),
     awful.key({ modkey , "Mod1" }, "t", function() 
         it.screen[mouse.screen].lpanel:pop()
         it:delete_tag({})
+    end ),
+    awful.key({ modkey ,}, "d", function() 
+        it:dump()
     end ),
     --[[Volume ]]--
     awful.key({ },"XF86AudioRaiseVolume" , function() 
@@ -354,7 +360,7 @@ clientkeys = awful.util.table.join(
     awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ),
     awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end),
     awful.key({ modkey,           }, "o",      awful.client.movetoscreen                        ),
-    awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end),
+    awful.key({ modkey, "Mod1"    }, "Space",      function (c) c.ontop = not c.ontop            end),
     awful.key({ modkey,           }, "n",
         function (c)
             -- The client currently has the input focus, so it cannot be
@@ -445,7 +451,13 @@ awful.rules.rules = {
         z.it.utils.create_new_tag_in_first_tagset(it,{tagset=ts,screen=mouse.screen})                            
         z.it.utils.pop(it)
       end }, 
-    { rule_any = { class = {"Iceweasel"} },except={name="Downloads"},
+    { rule_any = { class = {"Firefox"} },except={name="Downloads"},
+      callback = function(c) 
+        local ts={label="web",tag={ {label="www",clients={c},rules={delete_when_empty=true}} } }
+        z.it.utils.create_new_tag_in_first_tagset(it,{tagset=ts,screen=mouse.screen})                            
+        z.it.utils.pop(it)
+      end }, 
+    { rule_any = { class = {"chromium-browser"} },except={name="Downloads"},
       callback = function(c) 
         local ts={label="web",tag={ {label="www",clients={c},rules={delete_when_empty=true}} } }
         z.it.utils.create_new_tag_in_first_tagset(it,{tagset=ts,screen=mouse.screen})                            
@@ -456,6 +468,31 @@ awful.rules.rules = {
       callback = function(c) 
         naughty.notify({text='Icedove'})
         local ts={label="net",tag={ {label="mail",clients={c},rules={delete_when_empty=true}} } }
+        z.it.utils.move_client(c,it, {tagset=ts,screen=mouse.screen,clients={c}})
+        z.it.utils.pop(it)
+      end }, 
+    { rule = { class = "Pidgin"},
+      callback = function(c) 
+        local ts={label="net",tag={ {label="chat",clients={c},rules={delete_when_empty=true}} } }
+        z.it.utils.move_client(c,it, {tagset=ts,screen=mouse.screen,clients={c}})
+        z.it.utils.pop(it)
+      end }, 
+--[[ Sysadmin stuff ]]--
+    { rule = { class = "Wireshark"},
+      callback = function(c) 
+        local ts={label="netsec",tag={ {label="capture",clients={c},rules={delete_when_empty=true}} } }
+        z.it.utils.move_client(c,it, {tagset=ts,screen=mouse.screen,clients={c}})
+        z.it.utils.pop(it)
+      end }, 
+    { rule = { name = "tmux_ifaces"},
+      callback = function(c) 
+        local ts={label="netsec",tag={ {label="interfaces",clients={c},rules={delete_when_empty=true}} } }
+        z.it.utils.move_client(c,it, {tagset=ts,screen=mouse.screen,clients={c}})
+        z.it.utils.pop(it)
+      end }, 
+    { rule = { name = "tmux_net_logs"},
+      callback = function(c) 
+        local ts={label="netsec",tag={ {label="logs",clients={c},rules={delete_when_empty=true}} } }
         z.it.utils.move_client(c,it, {tagset=ts,screen=mouse.screen,clients={c}})
         z.it.utils.pop(it)
       end }, 
@@ -502,6 +539,18 @@ awful.rules.rules = {
       end }, 
 --[[Awesome development environment rules ]]--
     { rule = { class = "Xephyr"},
+      callback = function(c) 
+        local ts={label="awesome-dev",tag={ {label="run",clients={c}} } }
+        z.it.utils.move_client(c,it, {tagset=ts,screen=mouse.screen,clients={c}})
+        z.it.utils.pop(it)
+      end }, 
+    { rule = { name = "awesome_test"},
+      callback = function(c) 
+        local ts={label="awesome-dev",tag={ {label="run",clients={c}} } }
+        z.it.utils.move_client(c,it, {tagset=ts,screen=mouse.screen,clients={c}})
+        z.it.utils.pop(it)
+      end }, 
+    { rule = { class = "awesome_test"},
       callback = function(c) 
         local ts={label="awesome-dev",tag={ {label="run",clients={c}} } }
         z.it.utils.move_client(c,it, {tagset=ts,screen=mouse.screen,clients={c}})
@@ -635,3 +684,38 @@ function test1()
     it.screen[1]:add_tagset({})
     z.debug.msg("test1")
 end
+function test_presets() 
+    t={
+        label='cmd',
+        commands={'urxvt -name cmd_name'}
+    }
+    ts={
+        label='cmd_ts',
+        tag=t
+    }
+    it:add_tagset({
+        label='hi',
+        tag={
+            [0]={
+                label='tag1',
+                commands={'urxvt -name name1'}
+            },
+            [1]={
+                label='doc',
+                commands={'surf http://www.google.com'}
+            }
+        }
+    })
+end
+--test_presets()
+
+function test_spawn()
+    --local spn = require("awful"):spawn()
+    --local spn = awful.spawn:spawn("cmd",false,{})
+    
+    z.debug.msg("Test Spawn : "..type(spn))
+    
+    --spawn.spawn("urxvt -name blah",{},{})
+    --awful.spawn.spawn("urxvt -name blah",{},{})
+end
+test_spawn()

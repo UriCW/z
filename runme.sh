@@ -1,3 +1,4 @@
+xprop  -set WM_NAME "awesome_test" -root
 Xephyr  -ac -br -noreset -screen 800x600 :1 &
 sleep 1;
 DISPLAY=:1.0 awesome -c ./rc.lua > ./out.std 2>./out.err &

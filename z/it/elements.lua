@@ -28,7 +28,6 @@ function elements.add_screen(me,args)
     elements.bind_signals(me,ret)
     return ret
 end
-
 --[[
 Binds all signals on screen
 @scr - screen object
@@ -264,6 +263,17 @@ function elements.client_killed(me,client,args)
                 end
             end
         end
+    end
+end
+
+function elements.dump(me)
+    z.debug.msg("elements: dump")
+    for i,scr in pairs(me.screen) do
+        z.debug.msg("Screen:"..i)
+        for j,ts in pairs(scr.tagset) do
+            z.debug.msg("Tagset: "..j)
+        end
+
     end
 end
 

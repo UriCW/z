@@ -209,5 +209,4 @@ function screen.delete_tagset(me,args)
         me:add_tagset(new_tagset)
     end
 end
-
 setmetatable(_M, { __call=function(_, ...) return screen.new(...) end })

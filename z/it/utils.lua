@@ -10,12 +10,15 @@ module("z.it.utils")
 
 
 
+
+
+
 --I need to rewrite this, and also define somewhere how i want this to behave,
 --This will sometimes move client to all tags in args.tagset, sometimes just the 1st one,
 --Is args.tagset an array of tagsets or one tagset. also elements.find and tagset.find need to be better defined
 function move_client(c,elem,args)
 --function z.it.utils.move_client(c,elem,args)
-    naughty.notify({text="moving client to".. args.tagset.label .. " to tag "..args.tagset.tag[1].label})
+--    naughty.notify({text="moving client to".. args.tagset.label .. " to tag "..args.tagset.tag[1].label})
     
     local tagset=elem:find(args)
     if not tagset then --Tagset does not exist
@@ -152,12 +155,14 @@ end
 
 function get_client_by_pid(pid, scr) 
     local clients=client.get(scr)    
-
+    z.debug.msg("Number of clients:"..#clients)
     for i,c in pairs(clients) do
         --z.debug.msg("Will move pid"..tonumber(c.pid).."-"..pid)
         if pid==c.pid then
             z.debug.msg("Found the right pid for "..pid)
             return c
+        else
+            z.debug.msg("No process "..pid.."found in clients")
         end
     end
     return nil

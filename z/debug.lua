@@ -19,5 +19,5 @@ end
 
 
 function msg(txt)
-    naughty.notify({text="debug:"..txt,timeout=30})
+        naughty.notify({text="debug:"..txt,timeout=30})
 end

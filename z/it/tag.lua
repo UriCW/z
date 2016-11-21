@@ -72,7 +72,8 @@ function tag.new(args,scr)
             local pid=awful.util.spawn(c,true,scr)    
             --z.debug.msg(pid.." "..c)
             local cli=z.it.utils.get_client_by_pid(pid,scr)
-            --z.it.utils.move_client(cli,it,{})
+            if not cli then z.debug.msg("No Cli"); end
+            --z.it.utils.move_client(cli,z.it.element,{})
         end
     end
 
