@@ -1,7 +1,6 @@
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
-local spawn = require("awful.spawn")
 awful.rules = require("awful.rules")
 require("awful.autofocus")
 -- Widget and layout library
@@ -20,7 +19,6 @@ if awesome.startup_errors then
                      title = "Oops, there were errors during startup!",
                      text = awesome.startup_errors })
 end
-
 local z = require("z")
 z.debug.enabled=true
 -- Handle runtime errors after startup
@@ -351,7 +349,9 @@ globalkeys = awful.util.table.join(
     end),
     awful.key({ },"XF86AudioLowerVolume" , function() 
         naughty.notify({text="Vol down"})
-    end)
+    end),
+    --[[ Network monitor ]]--
+    awful.key({ modkey,       },"z",function() z.network.connections.toggle() end )
 )
 
 clientkeys = awful.util.table.join(
@@ -360,7 +360,7 @@ clientkeys = awful.util.table.join(
     awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ),
     awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end),
     awful.key({ modkey,           }, "o",      awful.client.movetoscreen                        ),
-    awful.key({ modkey, "Mod1"    }, "Space",      function (c) c.ontop = not c.ontop            end),
+    awful.key({ modkey, "Mod1"    }, "space",      function (c) c.ontop = not c.ontop            end),
     awful.key({ modkey,           }, "n",
         function (c)
             -- The client currently has the input focus, so it cannot be
@@ -718,4 +718,4 @@ function test_spawn()
     --spawn.spawn("urxvt -name blah",{},{})
     --awful.spawn.spawn("urxvt -name blah",{},{})
 end
-test_spawn()
+--test_spawn()
