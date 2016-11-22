@@ -1,5 +1,8 @@
 #Z - Another configuration framework for the awesome window manager
 ##z.* is a collection modules for awesome 
+
+[![Demo video](http://img.youtube.com/vi/GTmk7h5BDBs/0.jpg)](http://www.youtube.com/watch?v=GTmk7h5BDBs "Awesome Z")
+
 At it's core, z provides two types of panels: panel.lua, and lpanel.lua, it also contains a utils.lua which has some helper functions.
 
 A panel is a floating wibox with a list of either strings or widgets. It provides binding for assigning actions to the list elements, for scrolling up/down/first/last on the displayed list, for showing/hidding/timer-popup of the host wibox, setting the list's payload (for example the widgets list, or list of strings), allows for selection (of string or widget) and appending an element to the list.
