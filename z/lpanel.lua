@@ -1,6 +1,3 @@
---------------------------------------
---@author Yussi Divnal
---------------------------------------
 --[[[ 
     A Panel like implementation for stacked layouts
 ]]

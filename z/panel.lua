@@ -1,6 +1,3 @@
---------------------------------------
---@author Yussi Divnal
---------------------------------------
 local setmetatable=setmetatable
 local table=table
 require("z.utils")
